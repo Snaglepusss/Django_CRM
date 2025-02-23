@@ -2,23 +2,28 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .forms import SignUpForm
+from .models import Record
+
 
 # Create your views here.
-def home(request): ## This is the home page
-    # Check to see if logging in
-    if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        # Authenticate
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            messages.success(request, "You have been logged in")
-            return redirect('home')
-        else:
-            messages.success(request, " There was An error logging in Please try again ..")
-            return redirect('home')
-    return render(request, 'home.html', {})
+def home(request):
+	records = Record.objects.all()
+      
+	# Check to see if logging in
+	if request.method == 'POST':
+		username = request.POST['username']
+		password = request.POST['password']
+		# Authenticate
+		user = authenticate(request, username=username, password=password)
+		if user is not None:
+			login(request, user)
+			messages.success(request, "You Have Been Logged In!")
+			return redirect('home')
+		else:
+			messages.success(request, "There Was An Error Logging In, Please Try Again...")
+			return redirect('home')
+	else:
+		return render(request, 'home.html', {'records':records})
 
 
 def logout_user(request): ## This is the logout page
@@ -43,4 +48,12 @@ def register_user(request): ## This is the register page function
         form = SignUpForm()
         return render(request, 'register.html', {'form': form})
     return render(request, 'register.html', {'form': form})
-    
+
+def customer_record(request, pk):
+	if request.user.is_authenticated:
+		# Look Up Records
+		customer_record = Record.objects.get(id=pk)
+		return render(request, 'record.html', {'customer_record':customer_record})
+	else:
+		messages.success(request, "You Must Be Logged In To View That Page...")
+		return redirect('home')

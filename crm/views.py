@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 
 # Create your views here.
-def home(request):
+def home(request): ## This is the home page
     # Check to see if logging in
     if request.method == 'POST':
         username = request.POST['username']
@@ -21,6 +21,8 @@ def home(request):
 
 
 def logout_user(request):
-    pass
+    logout(request)
+    messages.success(request, "You have been logged out...")
+    return redirect('home')
 
 

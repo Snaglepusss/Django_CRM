@@ -20,9 +20,11 @@ def home(request): ## This is the home page
     return render(request, 'home.html', {})
 
 
-def logout_user(request):
+def logout_user(request): ## This is the logout page
     logout(request)
     messages.success(request, "You have been logged out...")
     return redirect('home')
 
 
+def register_user(request): ## This is the register page
+    return render(request, 'register.html', {})
